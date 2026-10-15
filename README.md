@@ -1,10 +1,10 @@
-# Relational Database Design — E-Commerce Order Management System
+# Relational Database Design: E-Commerce Order Management System
 
 > A normalized relational database schema for managing customers, products, orders, and inventory in an e-commerce context.
 
 ## Overview
 
-This project addresses the challenge of designing a robust database system for an e-commerce platform. The goal was to create a schema that handles complex relationships between customers, products, orders, and inventory while maintaining data integrity and query performance.
+This project addresses the challenge of designing a relational database system for an e-commerce platform. The goal was to create a schema that handles complex relationships between customers, products, orders, and inventory while maintaining data integrity and query performance.
 
 ## System Context
 
@@ -69,10 +69,10 @@ erDiagram
 ## Design Decisions & Trade-Offs
 
 | Decision | Rationale |
-|:---------|:----------|
-| **3NF Normalization** | Eliminates redundancy; ensures update/delete anomalies are prevented. |
+|:---|:---|
+| **3NF Normalization** | Eliminates redundancy; ensures update and delete anomalies are prevented. |
 | **Surrogate keys (auto-increment)** | Simplifies joins; avoids composite key complexity. |
-| **Separate ORDER_ITEM table** | Enables many-to-many between orders and products; stores line-item quantity and price snapshot. |
+| **Separate ORDER_ITEM table** | Enables many-to-many relationships between orders and products; stores line-item quantity and price snapshots. |
 | **Price snapshot in ORDER_ITEM** | Captures historical pricing at time of purchase, independent of current product price. |
 | **Indexed foreign keys** | Optimizes JOIN performance on high-frequency queries (order lookups, inventory checks). |
 
@@ -116,7 +116,7 @@ SELECT
     o.status
 FROM orders o
 JOIN customers c ON o.customer_id = c.customer_id
-WHERE o.order_date >= CURRENT_DATE - INTERVAL 30 DAY;
+WHERE o.order_date >= CURRENT_DATE - INTERVAL '30 days';
 ```
 
 **Low Stock Alert:**
@@ -134,16 +134,16 @@ ORDER BY i.quantity ASC;
 
 ## Results & Impact
 
-- **Data Integrity**: Referential constraints ensure no orphaned records.
-- **Query Performance**: Indexed foreign keys enable sub-second lookups on order and inventory tables.
-- **Scalability**: Normalized design supports growth without schema restructuring.
+- **Data Integrity**: Referential constraints prevent orphaned records across orders, payments, and shipments.
+- **Query Performance**: Indexed foreign keys enable fast lookups on order and inventory tables.
+- **Scalability**: Normalized design supports schema expansion without restructuring core entities.
 - **Maintainability**: Clear separation of concerns allows independent updates to customer, product, or order logic.
 
 ## Limitations & Next Iteration
 
 - **No soft deletes**: Current design uses hard deletes; a production system would add `is_active` flags for audit trails.
-- **Single currency**: Schema assumes one currency; multi-currency support would require additional columns or a currency table.
-- **No versioning**: Product changes overwrite existing records; future iteration would add product history table.
+- **Single currency**: Schema assumes one currency; multi-currency support would require additional columns or a currency conversion table.
+- **No versioning**: Product changes overwrite existing records; future iterations would add a product price history table.
 
 ## Tools & Technologies
 
@@ -151,9 +151,11 @@ ORDER BY i.quantity ASC;
 
 ---
 
-*Note: This repository documents a professional system case study.*
-*Source code is private or internal.*
+## Repository Structure
+
+- `schema.sql`: PostgreSQL DDL defining 9 normalized tables, foreign key constraints, check constraints, and performance indexes.
+- `README.md`: System context, ER diagram, architectural trade-offs, and sample analytical queries.
 
 ---
 
-*Built by Aimal Khan — Data Engineer & Automation Specialist*
+Built by Aimal Khan, Data Engineer.
